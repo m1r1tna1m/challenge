@@ -21,6 +21,21 @@ pipeline:
               - identifier: challenge_infra
           execution:
             steps:
+              - step:
+                  type: ShellScript
+                  name: Create namespace
+                  identifier: Create_namespace
+                  spec:
+                    shell: Bash
+                    onDelegate: true
+                    source:
+                      type: Inline
+                      spec:
+                        script: "# Create namespace if does not exist"
+                    environmentVariables: []
+                    outputVariables: []
+                  timeout: 10m
+                isContainerStepGroup: false
               - stepGroup:
                   name: Primary Deployment
                   identifier: primaryDepoyment
