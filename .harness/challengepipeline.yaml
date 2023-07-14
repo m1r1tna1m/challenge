@@ -27,7 +27,7 @@ pipeline:
                   identifier: Create_or_validate_namespace
                   spec:
                     shell: Bash
-                    onDelegate: true
+                    onDelegate: false
                     source:
                       type: Inline
                       spec:
@@ -43,6 +43,9 @@ pipeline:
                           kubectl get namespace | grep -q "^$myNamespace " || kubectl create namespace $myNamespace
                     environmentVariables: []
                     outputVariables: []
+                    executionTarget:
+                      connectorRef: account.labusersshrsa
+                      host: 192.168.248.111
                   timeout: 10m
                 isContainerStepGroup: false
               - stepGroup:
