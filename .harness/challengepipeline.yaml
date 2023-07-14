@@ -23,15 +23,24 @@ pipeline:
             steps:
               - step:
                   type: ShellScript
-                  name: Create namespace
-                  identifier: Create_namespace
+                  name: Create or validate namespace
+                  identifier: Create_or_validate_namespace
                   spec:
                     shell: Bash
                     onDelegate: true
                     source:
                       type: Inline
                       spec:
-                        script: "# Create namespace if does not exist"
+                        script: |
+                          # Create namespace if does not exist
+                          echo "get token from kubernetes cluster"
+
+                          mkdir -p $HOME/.kube
+
+                          cp /etc/rancher/k3s/k3s.yaml $HOME/.kube/config
+
+                          myNamespace="nginx-challenge"
+                          kubectl get namespace | grep -q "^$myNamespace " || kubectl create namespace $myNamespace
                     environmentVariables: []
                     outputVariables: []
                   timeout: 10m
