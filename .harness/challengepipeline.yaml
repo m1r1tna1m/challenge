@@ -48,17 +48,14 @@ pipeline:
                       host: 192.168.248.111
                   timeout: 10m
                 isContainerStepGroup: false
-              - stepGroup:
-                  name: Primary Deployment
-                  identifier: primaryDepoyment
-                  steps:
-                    - step:
-                        name: Rolling Deployment
-                        identifier: rollingDeployment
-                        type: K8sRollingDeploy
-                        timeout: 10m
-                        spec:
-                          skipDryRun: false
+              - step:
+                  type: K8sRollingDeploy
+                  name: Rolling Deployment
+                  identifier: Rolling_Deployment
+                  spec:
+                    skipDryRun: false
+                    pruningEnabled: false
+                  timeout: 10m
             rollbackSteps:
               - step:
                   name: Canary Delete
