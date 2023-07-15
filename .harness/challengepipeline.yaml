@@ -89,4 +89,4 @@ pipeline:
       type: Number
       description: Number of Replicas
       required: true
-      value: ""
+      value: <+input>
