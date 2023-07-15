@@ -82,6 +82,11 @@ pipeline:
   variables:
     - name: image.version
       type: String
-      description: ""
+      description: Nginx Image Version
       required: true
-      value: <+input>.regex(<+input>.default(\’1.14.2\’).allowedValues(\’1.14.2\’,\’1.16.1\’))
+      value: <+input>.default(\’1.14.2\’).allowedValues(\’1.14.2\’,\’1.16.1\’)
+    - name: number.replicas
+      type: Number
+      description: Number of Replicas
+      required: true
+      value: ""
