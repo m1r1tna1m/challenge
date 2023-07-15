@@ -80,12 +80,12 @@ pipeline:
               action:
                 type: StageRollback
   variables:
-    - name: image.version
+    - name: image_version
       type: String
       description: Nginx Image Version
       required: true
       value: <+input>.default(\’1.14.2\’).allowedValues(\’1.14.2\’,\’1.16.1\’)
-    - name: number.replicas
+    - name: number_replicas
       type: Number
       description: Number of Replicas
       required: true
