@@ -1,0 +1,92 @@
+pipeline:
+  name: challenge-pipeline
+  identifier: challengepipeline
+  projectIdentifier: p1113
+  orgIdentifier: P111
+  tags: {}
+  stages:
+    - stage:
+        name: Deploy
+        identifier: Deploy
+        description: ""
+        type: Deployment
+        spec:
+          deploymentType: Kubernetes
+          service:
+            serviceRef: nginx_challenge
+          environment:
+            environmentRef: challenge_env
+            deployToAll: false
+            infrastructureDefinitions:
+              - identifier: challenge_infra
+          execution:
+            steps:
+              - step:
+                  type: ShellScript
+                  name: Create or validate namespace
+                  identifier: Create_or_validate_namespace
+                  spec:
+                    shell: Bash
+                    onDelegate: false
+                    source:
+                      type: Inline
+                      spec:
+                        script: |
+                          # Create namespace if does not exist
+                          echo "get token from kubernetes cluster"
+
+                          mkdir -p $HOME/.kube
+
+                          cp /etc/rancher/k3s/k3s.yaml $HOME/.kube/config
+
+                          myNamespace="nginx-challenge"
+                          kubectl get namespace | grep -q "^$myNamespace " || kubectl create namespace $myNamespace
+                    environmentVariables: []
+                    outputVariables: []
+                    executionTarget:
+                      connectorRef: account.labusersshrsa
+                      host: 192.168.248.111
+                  timeout: 10m
+                isContainerStepGroup: false
+              - stepGroup:
+                  name: Primary Deployment
+                  identifier: primaryDepoyment
+                  steps:
+                    - step:
+                        name: Rolling Deployment
+                        identifier: rollingDeployment
+                        type: K8sRollingDeploy
+                        timeout: 10m
+                        spec:
+                          skipDryRun: false
+            rollbackSteps:
+              - step:
+                  name: Canary Delete
+                  identifier: rollbackCanaryDelete
+                  type: K8sCanaryDelete
+                  timeout: 10m
+                  spec: {}
+              - step:
+                  name: Rolling Rollback
+                  identifier: rollingRollback
+                  type: K8sRollingRollback
+                  timeout: 10m
+                  spec: {}
+        tags: {}
+        failureStrategies:
+          - onFailure:
+              errors:
+                - AllErrors
+              action:
+                type: StageRollback
+  variables:
+    - name: image_version
+      type: String
+      description: Nginx Image Version
+      required: true
+      value: <+input>.default(\’1.14.2\’).allowedValues(\’1.14.2\’,\’1.16.1\’)
+    - name: number_replicas
+      type: Number
+      description: Number of Replicas
+      required: true
+      value: <+input>
