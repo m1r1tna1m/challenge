@@ -89,4 +89,4 @@ pipeline:
       type: Number
       description: Number of Replicas
       required: true
-      value: <+input>
+      value: <+input>.default(2).regex([1-9])
