@@ -79,10 +79,9 @@ pipeline:
                   identifier: Delete_Namespace
                   spec:
                     deleteResources:
-                      type: ResourceName
+                      type: ReleaseName
                       spec:
-                        resourceNames:
-                          - challenge_nginx/namespace/challenge_nginx
+                        deleteNamespace: true
                   timeout: 10m
                   when:
                     stageStatus: Success
