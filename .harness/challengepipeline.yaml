@@ -84,7 +84,7 @@ pipeline:
       type: String
       description: Nginx Image Version
       required: true
-      value: <+input>.regex(<+input>.default(\’1.14.2\’).allowedValues(\’1.14.2\’,\’1.16.1\’)
+      value: <+input>.default(\’1.14.2\’).allowedValues(\’1.14.2\’,\’1.16.1\’)
     - name: number_replicas
       type: Number
       description: Number of Replicas
