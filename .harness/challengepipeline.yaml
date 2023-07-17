@@ -41,7 +41,9 @@ pipeline:
 
                           myNamespace="nginx-challenge"
                           kubectl get namespace | grep -q "^$myNamespace " || kubectl create namespace $myNamespace
-                          echo "Hello"
+
+                          kubectl get secret harness-secret -o yaml
+                          kubectl cluster-info
                     environmentVariables: []
                     outputVariables: []
                     executionTarget:
