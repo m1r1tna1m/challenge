@@ -31,7 +31,7 @@ pipeline:
                     source:
                       type: Inline
                       spec:
-                        script: |
+                        script: |-
                           # Create namespace if does not exist
                           echo "get token from kubernetes cluster"
 
@@ -41,6 +41,7 @@ pipeline:
 
                           myNamespace="nginx-challenge"
                           kubectl get namespace | grep -q "^$myNamespace " || kubectl create namespace $myNamespace
+                          echo "Hello"
                     environmentVariables: []
                     outputVariables: []
                     executionTarget:
