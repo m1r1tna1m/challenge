@@ -61,7 +61,7 @@ pipeline:
                     pruningEnabled: false
               - step:
                   type: K8sDelete
-                  name: K8sDelete_1
+                  name: Delete Deployment
                   identifier: K8sDelete_1
                   spec:
                     deleteResources:
