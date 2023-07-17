@@ -59,17 +59,35 @@ pipeline:
                   spec:
                     skipDryRun: false
                     pruningEnabled: false
-              - step:
-                  type: K8sDelete
-                  name: Delete Deployment
-                  identifier: K8sDelete_1
-                  spec:
-                    deleteResources:
-                      type: ManifestPath
-                      spec:
-                        manifestPaths:
-                          - /deployment.yaml
-                  timeout: 10m
+              - stepGroup:
+                  name: Delete Resources
+                  identifier: Delete_Resources
+                  steps:
+                    - parallel:
+                        - step:
+                            type: K8sDelete
+                            name: Delete Deployment
+                            identifier: K8sDelete_1
+                            spec:
+                              deleteResources:
+                                type: ManifestPath
+                                spec:
+                                  manifestPaths:
+                                    - /deployment.yaml
+                            timeout: 10m
+                            when:
+                              stageStatus: Success
+                        - step:
+                            type: K8sDelete
+                            name: Delete Namespace
+                            identifier: Delete_Namespace
+                            spec:
+                              deleteResources:
+                                type: ResourceName
+                                spec:
+                                  resourceNames:
+                                    - challenge_nginx/namespace/challenge_nginx
+                            timeout: 10m
                   when:
                     stageStatus: Success
                     condition: <+pipeline.variables.delete_deployment>
