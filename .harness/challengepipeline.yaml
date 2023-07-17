@@ -52,26 +52,21 @@ pipeline:
                   timeout: 10m
                 isContainerStepGroup: false
               - step:
+                  name: Rollout Deployment
+                  identifier: rolloutDeployment
                   type: K8sRollingDeploy
-                  name: Rolling Deployment
-                  identifier: Rolling_Deployment
+                  timeout: 10m
                   spec:
                     skipDryRun: false
                     pruningEnabled: false
-                  timeout: 10m
             rollbackSteps:
               - step:
-                  name: Canary Delete
-                  identifier: rollbackCanaryDelete
-                  type: K8sCanaryDelete
-                  timeout: 10m
-                  spec: {}
-              - step:
-                  name: Rolling Rollback
-                  identifier: rollingRollback
+                  name: Rollback Rollout Deployment
+                  identifier: rollbackRolloutDeployment
                   type: K8sRollingRollback
                   timeout: 10m
-                  spec: {}
+                  spec:
+                    pruningEnabled: false
         tags: {}
         failureStrategies:
           - onFailure:
