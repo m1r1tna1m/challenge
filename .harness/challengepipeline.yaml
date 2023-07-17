@@ -85,3 +85,8 @@ pipeline:
       description: Number of Replicas
       required: true
       value: <+input>.default(2).regex([1-9])
+    - name: delete_deployment
+      type: String
+      description: Delete Deployment?
+      required: false
+      value: <+input>.default(false).allowedValues(false, true)
