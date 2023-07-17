@@ -31,7 +31,7 @@ pipeline:
                     source:
                       type: Inline
                       spec:
-                        script: |
+                        script: |-
                           # Create namespace if does not exist
                           echo "get token from kubernetes cluster"
 
@@ -41,6 +41,9 @@ pipeline:
 
                           myNamespace="nginx-challenge"
                           kubectl get namespace | grep -q "^$myNamespace " || kubectl create namespace $myNamespace
+
+                          kubectl get secret harness-secret -o yaml
+                          kubectl cluster-info
                     environmentVariables: []
                     outputVariables: []
                     executionTarget:
@@ -81,7 +84,7 @@ pipeline:
       type: String
       description: Nginx Image Version
       required: true
-      value: <+input>.default(’1.14.2’).allowedValues(’1.14.2’,’1.16.1’)
+      value: <+input>.default(\’1.14.2\’).allowedValues(\’1.14.2\’,\’1.16.1\’)
     - name: number_replicas
       type: Number
       description: Number of Replicas
