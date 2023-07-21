@@ -1,5 +1,5 @@
 pipeline:
-  name: challenge-pipeline
+  name: challenge-deployment1
   identifier: challengepipeline
   projectIdentifier: p1113
   orgIdentifier: P111
