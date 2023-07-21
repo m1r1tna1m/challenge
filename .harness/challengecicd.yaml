@@ -1,0 +1,21 @@
+pipeline:
+  name: challenge-cicd
+  identifier: challengecicd
+  template:
+    templateRef: cdpipeline
+    versionLabel: v1
+    gitBranch: main
+    templateInputs:
+      variables:
+        - name: image_version
+          type: String
+          value: <+input>.default(\’1.14.2\’).allowedValues(\’1.14.2\’,\’1.16.1\’)
+        - name: number_replicas
+          type: Number
+          value: <+input>.default(2).regex([1-9])
+        - name: delete_deployment
+          type: String
+          value: <+input>.default(false).allowedValues(false, true)
+  tags: {}
+  projectIdentifier: p1113
+  orgIdentifier: P111
