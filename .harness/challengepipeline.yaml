@@ -22,6 +22,12 @@ pipeline:
           execution:
             steps:
               - step:
+                  name: Approval
+                  identifier: Approval
+                  template:
+                    templateRef: challengeapprovalstep
+                    versionLabel: v1
+              - step:
                   type: ShellScript
                   name: Create or validate namespace
                   identifier: Create_or_validate_namespace
