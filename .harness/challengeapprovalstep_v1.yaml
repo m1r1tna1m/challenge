@@ -1,0 +1,21 @@
+template:
+  name: challenge-approval-step
+  identifier: challengeapprovalstep
+  versionLabel: v1
+  type: Step
+  projectIdentifier: p1113
+  orgIdentifier: P111
+  tags: {}
+  spec:
+    type: HarnessApproval
+    spec:
+      approvalMessage: Please review the following information and approve the pipeline progression
+      includePipelineExecutionHistory: true
+      isAutoRejectEnabled: true
+      approvers:
+        userGroups:
+          - _project_all_users
+        minimumCount: 1
+        disallowPipelineExecutor: false
+      approverInputs: []
+    timeout: 15m
