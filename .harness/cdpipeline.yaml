@@ -1,0 +1,126 @@
+template:
+  name: cd-pipeline
+  type: Pipeline
+  projectIdentifier: p1113
+  orgIdentifier: P111
+  spec:
+    stages:
+      - stage:
+          name: Deploy
+          identifier: Deploy
+          description: ""
+          type: Deployment
+          spec:
+            deploymentType: Kubernetes
+            service:
+              serviceRef: nginx_challenge
+            environment:
+              environmentRef: challenge_env
+              deployToAll: false
+              infrastructureDefinitions:
+                - identifier: challenge_infra
+            execution:
+              steps:
+                - step:
+                    type: ShellScript
+                    name: Create or validate namespace
+                    identifier: Create_or_validate_namespace
+                    spec:
+                      shell: Bash
+                      onDelegate: false
+                      source:
+                        type: Inline
+                        spec:
+                          script: |-
+                            # Create namespace if does not exist
+                            echo "get token from kubernetes cluster"
+
+                            mkdir -p $HOME/.kube
+
+                            cp /etc/rancher/k3s/k3s.yaml $HOME/.kube/config
+
+                            myNamespace="nginx-challenge"
+                            kubectl get namespace | grep -q "^$myNamespace " || kubectl create namespace $myNamespace
+
+                            kubectl get secret harness-secret -o yaml
+                            kubectl cluster-info
+                      environmentVariables: []
+                      outputVariables: []
+                      executionTarget:
+                        connectorRef: account.labusersshrsa
+                        host: 192.168.248.111
+                    timeout: 10m
+                  isContainerStepGroup: false
+                - step:
+                    name: Rollout Deployment
+                    identifier: rolloutDeployment
+                    type: K8sRollingDeploy
+                    timeout: 10m
+                    spec:
+                      skipDryRun: false
+                      pruningEnabled: false
+                - stepGroup:
+                    name: Delete Steps
+                    identifier: Delete_Steps
+                    steps:
+                      - step:
+                          type: K8sDelete
+                          name: Delete Deployment
+                          identifier: K8sDelete_1
+                          spec:
+                            deleteResources:
+                              type: ManifestPath
+                              spec:
+                                manifestPaths:
+                                  - /deployment.yaml
+                          timeout: 10m
+                          when:
+                            stageStatus: Success
+                      - step:
+                          type: K8sDelete
+                          name: Delete Namespace
+                          identifier: Delete_Namespace
+                          spec:
+                            deleteResources:
+                              type: ReleaseName
+                              spec:
+                                deleteNamespace: true
+                          timeout: 10m
+                          when:
+                            stageStatus: Success
+                    when:
+                      stageStatus: Success
+                      condition: <+pipeline.variables.delete_deployment>
+              rollbackSteps:
+                - step:
+                    name: Rollback Rollout Deployment
+                    identifier: rollbackRolloutDeployment
+                    type: K8sRollingRollback
+                    timeout: 10m
+                    spec:
+                      pruningEnabled: false
+          tags: {}
+          failureStrategies:
+            - onFailure:
+                errors:
+                  - AllErrors
+                action:
+                  type: StageRollback
+    variables:
+      - name: image_version
+        type: String
+        description: Nginx Image Version
+        required: true
+        value: <+input>.default(\’1.14.2\’).allowedValues(\’1.14.2\’,\’1.16.1\’)
+      - name: number_replicas
+        type: Number
+        description: Number of Replicas
+        required: true
+        value: <+input>.default(2).regex([1-9])
+      - name: delete_deployment
+        type: String
+        description: Delete Deployment?
+        required: false
+        value: <+input>.default(false).allowedValues(false, true)
+  identifier: cdpipeline
+  versionLabel: v1
