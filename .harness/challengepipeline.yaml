@@ -59,30 +59,35 @@ pipeline:
                   spec:
                     skipDryRun: false
                     pruningEnabled: false
-              - step:
-                  type: K8sDelete
-                  name: Delete Deployment
-                  identifier: K8sDelete_1
-                  spec:
-                    deleteResources:
-                      type: ManifestPath
-                      spec:
-                        manifestPaths:
-                          - /deployment.yaml
-                  timeout: 10m
-                  when:
-                    stageStatus: Success
-                    condition: <+pipeline.variables.delete_deployment>
-              - step:
-                  type: K8sDelete
-                  name: Delete Namespace
-                  identifier: Delete_Namespace
-                  spec:
-                    deleteResources:
-                      type: ReleaseName
-                      spec:
-                        deleteNamespace: true
-                  timeout: 10m
+              - stepGroup:
+                  name: Delete Steps
+                  identifier: Delete_Steps
+                  steps:
+                    - step:
+                        type: K8sDelete
+                        name: Delete Deployment
+                        identifier: K8sDelete_1
+                        spec:
+                          deleteResources:
+                            type: ManifestPath
+                            spec:
+                              manifestPaths:
+                                - /deployment.yaml
+                        timeout: 10m
+                        when:
+                          stageStatus: Success
+                    - step:
+                        type: K8sDelete
+                        name: Delete Namespace
+                        identifier: Delete_Namespace
+                        spec:
+                          deleteResources:
+                            type: ReleaseName
+                            spec:
+                              deleteNamespace: true
+                        timeout: 10m
+                        when:
+                          stageStatus: Success
                   when:
                     stageStatus: Success
                     condition: <+pipeline.variables.delete_deployment>
