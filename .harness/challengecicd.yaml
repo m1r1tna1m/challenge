@@ -3,8 +3,7 @@ pipeline:
   identifier: challengecicd
   template:
     templateRef: cdpipeline
-    versionLabel: v1
-    gitBranch: main
+    versionLabel: v2
     templateInputs:
       variables:
         - name: image_version
