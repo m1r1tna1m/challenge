@@ -1,0 +1,17 @@
+inputSet:
+  pipeline:
+    identifier: challengepipeline
+    variables:
+      - name: image_version
+        type: String
+        value: \’1.16.1\’
+      - name: number_replicas
+        type: Number
+        value: 3
+      - name: delete_deployment
+        type: String
+        value: "true"
+  name: InputSet1
+  identifier: InputSet1
+  orgIdentifier: P111
+  projectIdentifier: p1113
