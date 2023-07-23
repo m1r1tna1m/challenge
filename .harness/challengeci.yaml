@@ -1,5 +1,5 @@
 pipeline:
-  name: Build java
+  name: challenge-ci
   identifier: Build_java
   projectIdentifier: p1113
   orgIdentifier: P111
@@ -7,7 +7,7 @@ pipeline:
     ci:
       codebase:
         connectorRef: git_java_connector
-        repoName: harness-cie-lab
+        repoName: helloworld
         build: <+input>
   stages:
     - stage:
@@ -51,3 +51,4 @@ pipeline:
                     repo: miritnaim/harnesschallenge
                     tags:
                       - <+pipeline.sequenceId>
+  tags: {}
