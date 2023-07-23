@@ -15,8 +15,6 @@ pipeline:
         identifier: Build
         type: CI
         spec:
-          caching:
-            enabled: true
           cloneCodebase: true
           platform:
             os: Linux
