@@ -4,11 +4,6 @@ pipeline:
   projectIdentifier: p1113
   orgIdentifier: P111
   tags: {}
-  properties:
-    ci:
-      codebase:
-        connectorRef: git_java_connector
-        build: <+input>
   stages:
     - stage:
         name: Build
@@ -26,20 +21,6 @@ pipeline:
           execution:
             steps:
               - step:
-                  type: RunTests
-                  name: RunTests_1
-                  identifier: RunTests_1
-                  spec:
-                    language: Java
-                    buildTool: Maven
-                    args: clean test
-                    runOnlySelectedTests: true
-                    reports:
-                      type: JUnit
-                      spec:
-                        paths:
-                          - "**/*.xml"
-              - step:
                   type: BuildAndPushDockerRegistry
                   name: BuildAndPushDockerRegistry_1
                   identifier: BuildAndPushDockerRegistry_1
@@ -48,3 +29,8 @@ pipeline:
                     repo: miritnaim/harnesschallenge
                     tags:
                       - <+pipeline.sequenceId>
+  properties:
+    ci:
+      codebase:
+        connectorRef: git_java_connector
+        build: <+input>
