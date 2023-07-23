@@ -6,14 +6,13 @@ pipeline:
   properties:
     ci:
       codebase:
-        connectorRef: YOUR_CODE_REPO_CONNECTOR_ID
-        repoName: YOUR_REPO_NAME
+        connectorRef: git_java_connector
+        repoName: harness-cie-lab
         build: <+input>
   stages:
     - stage:
         name: Build
         identifier: Build
-        description: ""
         type: CI
         spec:
           caching:
