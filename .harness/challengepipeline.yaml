@@ -27,44 +27,48 @@ pipeline:
                   template:
                     templateRef: challengeapprovalstep
                     versionLabel: v1
-              - step:
-                  type: ShellScript
-                  name: Create or validate namespace
-                  identifier: Create_or_validate_namespace
-                  spec:
-                    shell: Bash
-                    onDelegate: false
-                    source:
-                      type: Inline
-                      spec:
-                        script: |-
-                          # Create namespace if does not exist
-                          echo "get token from kubernetes cluster"
+              - stepGroup:
+                  name: Create Deployment
+                  identifier: Create_Deployment
+                  steps:
+                    - step:
+                        type: ShellScript
+                        name: Create or validate namespace
+                        identifier: Create_or_validate_namespace
+                        spec:
+                          shell: Bash
+                          onDelegate: false
+                          source:
+                            type: Inline
+                            spec:
+                              script: |-
+                                # Create namespace if does not exist
+                                echo "get token from kubernetes cluster"
 
-                          mkdir -p $HOME/.kube
+                                mkdir -p $HOME/.kube
 
-                          cp /etc/rancher/k3s/k3s.yaml $HOME/.kube/config
+                                cp /etc/rancher/k3s/k3s.yaml $HOME/.kube/config
 
-                          myNamespace="nginx-challenge"
-                          kubectl get namespace | grep -q "^$myNamespace " || kubectl create namespace $myNamespace
+                                myNamespace="nginx-challenge"
+                                kubectl get namespace | grep -q "^$myNamespace " || kubectl create namespace $myNamespace
 
-                          kubectl get secret harness-secret -o yaml
-                          kubectl cluster-info
-                    environmentVariables: []
-                    outputVariables: []
-                    executionTarget:
-                      connectorRef: account.labusersshrsa
-                      host: 192.168.248.111
-                  timeout: 10m
-                isContainerStepGroup: false
-              - step:
-                  name: Rollout Deployment
-                  identifier: rolloutDeployment
-                  type: K8sRollingDeploy
-                  timeout: 10m
-                  spec:
-                    skipDryRun: false
-                    pruningEnabled: false
+                                kubectl get secret harness-secret -o yaml
+                                kubectl cluster-info
+                          environmentVariables: []
+                          outputVariables: []
+                          executionTarget:
+                            connectorRef: account.labusersshrsa
+                            host: 192.168.248.111
+                        timeout: 10m
+                      isContainerStepGroup: false
+                    - step:
+                        name: Rollout Deployment
+                        identifier: rolloutDeployment
+                        type: K8sRollingDeploy
+                        timeout: 10m
+                        spec:
+                          skipDryRun: false
+                          pruningEnabled: false
               - stepGroup:
                   name: Delete Steps
                   identifier: Delete_Steps
