@@ -26,7 +26,7 @@ pipeline:
                   identifier: BuildAndPushDockerRegistry_1
                   spec:
                     connectorRef: Challenge_Docker_Connector
-                    repo: harnesschallenge
+                    repo: miritnaim/harnesschallenge
                     tags:
                       - <+pipeline.sequenceId>
   properties:
