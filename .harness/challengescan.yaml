@@ -1,0 +1,54 @@
+pipeline:
+  name: challenge-scan
+  identifier: challengescan
+  projectIdentifier: p1113
+  orgIdentifier: P111
+  tags: {}
+  properties:
+    ci:
+      codebase:
+        connectorRef: git_java_connector
+        build: <+input>
+  stages:
+    - stage:
+        name: challenge_scan
+        identifier: challenge_scan
+        type: SecurityTests
+        spec:
+          cloneCodebase: true
+          execution:
+            steps:
+              - step:
+                  type: Background
+                  name: dind
+                  identifier: dind
+                  spec:
+                    connectorRef: Challenge_Docker_Connector
+                    image: docker:dind
+                    shell: Sh
+                    privileged: true
+              - step:
+                  type: Security
+                  name: Security_1
+                  identifier: Security_1
+                  spec:
+                    privileged: true
+                    settings:
+                      policy_type: orchestratedScan
+                      scan_type: repository
+                      product_name: challenge
+                      product_config_name: default
+                      repository_project: challenge
+                      repository_branch: main
+          sharedPaths:
+            - /var/run
+          caching:
+            enabled: false
+          infrastructure:
+            type: KubernetesDirect
+            spec:
+              connectorRef: k8s_challenge_connector
+              namespace: harness-challenge
+              automountServiceAccountToken: true
+              nodeSelector: {}
+              os: Linux
