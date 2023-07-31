@@ -38,7 +38,7 @@ pipeline:
                       scan_type: repository
                       product_name: challenge
                       product_config_name: default
-                      repository_project: challenge
+                      repository_project: codecommit4harness
                       repository_branch: main
           sharedPaths:
             - /var/run
