@@ -21,12 +21,6 @@ pipeline:
               - identifier: challenge_infra
           execution:
             steps:
-              - step:
-                  name: Approval
-                  identifier: Approval
-                  template:
-                    templateRef: challengeapprovalstep
-                    versionLabel: v1
               - stepGroup:
                   name: Create Deployment
                   identifier: Create_Deployment
@@ -69,6 +63,12 @@ pipeline:
                         spec:
                           skipDryRun: false
                           pruningEnabled: false
+              - step:
+                  name: Approval
+                  identifier: Approval
+                  template:
+                    templateRef: challengeapprovalstep
+                    versionLabel: v1
               - stepGroup:
                   name: Delete Steps
                   identifier: Delete_Steps
