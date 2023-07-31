@@ -48,7 +48,7 @@ pipeline:
             type: KubernetesDirect
             spec:
               connectorRef: k8s_challenge_connector
-              namespace: harness-challenge
+              namespace: nginx-challenge
               automountServiceAccountToken: true
               nodeSelector: {}
               os: Linux
