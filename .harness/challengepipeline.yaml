@@ -86,6 +86,7 @@ pipeline:
                         timeout: 10m
                         when:
                           stageStatus: Success
+                          condition: "false"
                     - step:
                         type: K8sDelete
                         name: Delete Namespace
